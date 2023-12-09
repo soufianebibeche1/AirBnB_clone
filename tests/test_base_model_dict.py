@@ -4,37 +4,24 @@ import unittest
 from models.base_model import BaseModel
 
 
-class TestBaseModel(unittest.TestCase):
-    """Test cases for the BaseModel class."""
+class TestBaseModelDict(unittest.TestCase):
+    """Test cases for creating BaseModel from dictionary."""
 
-    def test_base_model_attributes(self):
-        """Test attributes of BaseModel."""
+    def test_create_base_model_from_dict(self):
+        """Test creating BaseModel instance from dictionary."""
         my_model = BaseModel()
-        self.assertIsInstance(my_model.id, str)
-        self.assertIsInstance(my_model.created_at, datetime)
-        self.assertIsInstance(my_model.updated_at, datetime)
+        my_model.name = "My_First_Model"
+        my_model.my_number = 89
+        my_model_json = my_model.to_dict()
 
-    def test_base_model_str_method(self):
-        """Test __str__ method of BaseModel."""
-        my_model = BaseModel()
-        expected_str = "[BaseModel] ({}) {}".format(my_model.id, my_model.__dict__)
-        self.assertEqual(str(my_model), expected_str)
+        my_new_model = BaseModel(**my_model_json)
 
-    def test_base_model_save_method(self):
-        """Test save method of BaseModel."""
-        my_model = BaseModel()
-        old_updated_at = my_model.updated_at
-        my_model.save()
-        self.assertNotEqual(old_updated_at, my_model.updated_at)
-
-    def test_base_model_to_dict_method(self):
-        """Test to_dict method of BaseModel."""
-        my_model = BaseModel()
-        obj_dict = my_model.to_dict()
-        self.assertEqual(obj_dict['__class__'], 'BaseModel')
-        self.assertIsInstance(obj_dict['created_at'], str)
-        self.assertIsInstance(obj_dict['updated_at'], str)
-        self.assertIsInstance(obj_dict['id'], str)
+        self.assertEqual(my_model.id, my_new_model.id)
+        self.assertEqual(my_model.name, my_new_model.name)
+        self.assertEqual(my_model.my_number, my_new_model.my_number)
+        self.assertEqual(my_model.created_at, my_new_model.created_at)
+        self.assertEqual(my_model.updated_at, my_new_model.updated_at)
+        self.assertNotEqual(my_model, my_new_model)
 
 if __name__ == '__main__':
     unittest.main()
