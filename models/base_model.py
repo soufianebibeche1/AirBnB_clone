@@ -5,6 +5,7 @@ Module contain the BaseModel class.
 import uuid
 from datetime import datetime
 
+
 class BaseModel:
     """
     BaseModel class.
