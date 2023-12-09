@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Package initializer for module.
+Package initializer.
 """
 from models.base_model import BaseModel
 
