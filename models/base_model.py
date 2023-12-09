@@ -4,6 +4,8 @@ Module for BaseModel class.
 """
 import uuid
 from datetime import datetime
+import models
+
 
 class BaseModel:
     """
@@ -23,7 +25,7 @@ class BaseModel:
         Returns:
             Formatted string [<class name>] (<self.id>) <self.__dict__>
         """
-        return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)
+        return (f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}")
 
     def save(self):
         """
@@ -36,8 +38,12 @@ class BaseModel:
         Returns:
             Dictionary representation of the instance
         """
-        obj_dict = self.__dict__.copy()
-        obj_dict['__class__'] = self.__class__.__name__
-        obj_dict['created_at'] = self.created_at.isoformat()
-        obj_dict['updated_at'] = self.updated_at.isoformat()
-        return obj_dict
+        dictionary = {"__class__": self.__class__.__name__}
+        for key, value in self.__dict__.items():
+            if key == "created_at":
+                dictionary[key] = value.isoformat()
+            elif key == "updated_at":
+                dictionary[key] = value.isoformat()
+            else:
+                dictionary[key] = value
+        return dictionary
