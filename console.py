@@ -16,7 +16,7 @@ from models.amenity import Amenity
 
 def parse(arg):
     """
-    It splits the argument string into a list of strings, 
+    It splits the argument string into a list of strings,
     and then appends the curly braces or brackets to the end of the
     list
     :param arg: The argument to be parsed
@@ -77,7 +77,9 @@ class HBNBCommand(cmd.Cmd):
             arg1 = [arg[:matching.span()[0]], arg[matching.span()[1]:]]
             matching = re.search(r"\((.*?)\)", arg1[1])
             if matching is not None:
-                command = [arg1[1][:matching.span()[0]], matching.group()[1:-1]]
+                command = [
+                    arg1[1][:matching.span()[0]], matching.group()[1:-1]
+                ]
                 if command[0] in argdict.keys():
                     call = "{} {}".format(arg1[0], command[1])
                     return argdict[command[0]](call)
@@ -152,12 +154,14 @@ class HBNBCommand(cmd.Cmd):
         :param arg: the string that the user inputs
         """
         arglength = parse(arg)
-        if len(arglength) > 0 and arglength[0] not in HBNBCommand.className.keys():
+        if len(arglength) > 0 and \
+                arglength[0] not in HBNBCommand.className.keys():
             print("** class doesn't exist **")
         else:
             objlength = []
             for obj in storage.all().values():
-                if len(arglength) > 0 and arglength[0] == obj.__class__.__name__:
+                if len(arglength) > 0 and \
+                        arglength[0] == obj.__class__.__name__:
                     objlength.append(obj.__str__())
                 elif len(arglength) == 0:
                     objlength.append(obj.__str__())
