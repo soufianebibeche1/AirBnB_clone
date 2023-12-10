@@ -1,58 +1,45 @@
 #!/usr/bin/python3
-"""Defines the BaseModel class"""
-from uuid import uuid4
+"""Module for BaseModel class."""
+import uuid
 from datetime import datetime
 from models import storage
 
 
 class BaseModel:
-    """This is the class that represents the BaseModel"""
+    """BaseModel class for AirBnB clone project."""
 
-    def __init__(self, *arg, **kwargs):
-        """
-        It creates a new instance of the class.
-        """
-        tformat = "%Y-%m-%dT%H:%M:%S.%f"
-        self.id = str(uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
-        if len(kwargs) != 0:
-            for j, k in kwargs.items():
-                if j == "created_at" or j == "updated_at":
-                    self.__dict__[j] = datetime.strptime(k, tformat)
-                else:
-                    self.__dict__[j] = k
+    def __init__(self, *args, **kwargs):
+        """Initializes a new instance of BaseModel."""
+        if kwargs:
+            for key, value in kwargs.items():
+                if key != "__class__":
+                    if key in [
+                        "created_at", "updated_at"
+                    ]:
+                        value = datetime.strptime(
+                            value, '%Y-%m-%dT%H:%M:%S.%f'
+                        )
+                    setattr(self, key, value)
         else:
-            pass
+            self.id = str(uuid.uuid4())
+            self.created_at = self.updated_at = datetime.now()
             storage.new(self)
 
     def save(self):
-        """
-        The save function updates the updated_at attribute of the
-        instance with the current datetime and saves the instance
-        to the JSON file
-        """
+        """Saves the current instance to the storage."""
         self.updated_at = datetime.now()
         storage.save()
 
     def to_dict(self):
-        """
-        This function takes an object and returns a
-        dictionary representation of that object
-        :return: The return_dict is being returned.
-        """
-        return_dict = self.__dict__.copy()
-        return_dict["created_at"] = self.created_at.isoformat()
-        return_dict["updated_at"] = self.updated_at.isoformat()
-        return_dict["__class__"] = self.__class__.__name__
-        return return_dict
+        """Returns a dictionary representation of the instance."""
+        result = self.__dict__.copy()
+        result["__class__"] = self.__class__.__name__
+        result["created_at"] = self.created_at.isoformat()
+        result["updated_at"] = self.updated_at.isoformat()
+        return result
 
     def __str__(self):
-        """
-        The function returns a string that contains the class name,
-        the id of the object, and the contents of the object's
-        dictionary
-        :return: The class name, the id of the object, and the dictionary of the object.
-        """
-        clname = self.__class__.__name__
-        return "[{}] ({}) {}".format(clname, self.id, self.__dict__)
+        """Returns a string representation of the instance."""
+        return "[{}] ({}) {}".format(
+            self.__class__.__name__, self.id, self.__dict__
+        )
